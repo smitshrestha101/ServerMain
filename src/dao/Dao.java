@@ -23,4 +23,6 @@ public interface Dao {
     public Map<String, Integer> getMap();
     public void addUser(String id, String pw);
     public Account getAccount(String inputId);
+    public FileDao getFileDao();
+    public void uploadFile(String fileContent, String id);
 }

@@ -38,6 +38,10 @@ public class Account {
     public void setfiles(String files) {
         this.files = files;
     }
+    
+    public void addFile(String fileName){
+        files += " " + fileName;
+    }
 
     public String getUserId() {
         return userId;
@@ -66,6 +70,13 @@ public class Account {
         return "Account{" + "userId=" + userId + ", password=" + password + ", files=" + files + '}';
     }
     
+    public List<String> getFileList(){
+        List<String> fileList = new ArrayList<>();
+        for(String item : files.split(" ")){
+        fileList.add(item);
+        }
+        return fileList;
+    }
     
     
     

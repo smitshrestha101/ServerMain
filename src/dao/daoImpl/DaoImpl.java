@@ -6,6 +6,7 @@
 package dao.daoImpl;
 
 import dao.Dao;
+import dao.FileDao;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,6 +26,9 @@ public class DaoImpl implements Dao{
     List<Account> accountList = new ArrayList<>();
     Map<String, Integer> map = new HashMap<String, Integer>();
     Helper help;
+     FileDao fileDao=new FileDaoImpl();
+    
+    
     
     @Override
     public String getDataListString() {
@@ -86,5 +90,31 @@ public class DaoImpl implements Dao{
         int index=(int)map.get(inputId);
         return accountList.get(index);
     }
+
+    @Override
+    public FileDao getFileDao() {
+        return fileDao;
+    }
+
+    @Override
+    public void uploadFile(String fileContent, String id) {
+        String[] items = fileContent.split("\\*");
+        
+        getAccount(id).addFile(items[0]);
+        fileDao.addFile(items[0], items[1]);
+         try {
+            help.write("account.txt", getDataListString());
+        } catch (IOException ex) {
+            Logger.getLogger(DaoImpl.class.getName()).log(Level.SEVERE, null, ex);
+        }
+         
+         
+        try {
+            help.write(items[0],items[1]);
+        } catch (IOException ex) {
+            Logger.getLogger(DaoImpl.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
     
 }

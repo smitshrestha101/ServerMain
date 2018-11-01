@@ -26,6 +26,15 @@ public class Helper {
 
         writer.close();
     }
+    //TO ADD WRITE FILE IN SPECIFIC FILE
+    public void writeFile(String fileName, String toWrite) throws IOException {
+        BufferedWriter writer = new BufferedWriter(new FileWriter(fileName));
+        writer.write(toWrite);
+
+        writer.close();
+    }
+    
+    
     
     public void update(String fileName,String toWrite) throws IOException{
         File file=new File(fileName);
@@ -49,6 +58,17 @@ public class Helper {
         }
         return list;
 
+    }
+    
+    public String readFiles(String fileName) throws IOException{
+        BufferedReader reader = new BufferedReader(new FileReader(fileName));
+        String line = "";
+        String content = "";
+        
+        while ((line = reader.readLine()) != null) {
+           content += line;
+        }
+        return content;
     }
 
 }

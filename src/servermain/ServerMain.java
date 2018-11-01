@@ -38,10 +38,11 @@ public class ServerMain {
 
         Dao dao = new DaoImpl();
         dao.createAccountList();
-        
+        dao.getFileDao().createFileList();
         
         
         System.out.println(dao.getDataListString());
+        
         
         
         int tcount=0;

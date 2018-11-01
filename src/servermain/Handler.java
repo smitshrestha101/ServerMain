@@ -9,6 +9,7 @@ import dao.Dao;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.List;
 import java.util.Map;
@@ -77,7 +78,7 @@ public class Handler extends Thread {
 
             input = dis.readUTF();
 
-            String[] idpw = input.split("*");
+            String[] idpw = input.split("\\*");
             id = idpw[0];
             pw = idpw[1];
 
@@ -93,17 +94,18 @@ public class Handler extends Thread {
 
     public void existingUser() throws IOException {
         String inputId, inputPw;
+
         int trials = 0;
 
-        if (trials < 3) {
-
+        while (trials < 3) {
+            
             dos.writeUTF("Enter id: ");
 
             inputId = dis.readUTF();
 
             dos.writeUTF("Enter Password: ");
             inputPw = dis.readUTF();
-
+            //System.out.println(inputPw+inputId);
             boolean keyExist = dao.getMap().containsKey(inputId);
 
             Account acc = null;
@@ -112,7 +114,9 @@ public class Handler extends Thread {
                 acc = dao.getAccount(inputId);
 
                 if (inputPw.equals(acc.getPassword())) {
+                    System.out.println("insert");
                     fileAccess(inputId);
+                    
 
                 } else {
                     dos.writeUTF("UserID and Password do not match.");
@@ -120,11 +124,15 @@ public class Handler extends Thread {
                 }
 
             }
+            else{
+                 trials++;
+            }
 
-        } else {
-            dos.writeUTF("You failed the 3 trials, the connection will be terminated!");
-            disconnect();
-        }
+        } 
+        dos.writeUTF("You failed the 3 trials, the connection will be terminated!");
+        disconnect();
+            
+        
 
     }
 
@@ -151,6 +159,44 @@ public class Handler extends Thread {
         
         input=dis.readUTF();
         
+        switch (input){
+            case "1":
+                download(inputId);
+                break;
+            case "2":
+                upload(inputId);
+                
+        }
+             
         
+        
+    }
+    
+    public void download(String inputId) throws IOException{
+        String fileName;
+        DFile file;
+        dos.writeUTF("Enter the name of the file to download: ");
+        
+        fileName=dis.readUTF();
+        
+        file=dao.getFileDao().getFile(fileName);
+        
+        if (file==null){
+            dos.writeUTF("File doesnt exist!");
+        }
+        else{
+            dos.writeUTF(fileName+"*"+file.getContents());
+        }
+        
+        
+    }
+    
+    public void upload(String id)throws IOException{
+        String fileContent;
+        dos.writeUTF("Enter filename and contents separated by *: ");
+        
+        fileContent=dis.readUTF();
+        
+        dao.uploadFile(fileContent,id);
     }
 }
