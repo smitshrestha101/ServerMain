@@ -26,7 +26,7 @@ public class DaoImpl implements Dao{
     List<Account> accountList = new ArrayList<>();
     Map<String, Integer> map = new HashMap<String, Integer>();
     Helper help;
-     FileDao fileDao=new FileDaoImpl();
+    FileDao fileDao=new FileDaoImpl();
     
     
     
@@ -100,6 +100,8 @@ public class DaoImpl implements Dao{
     public void uploadFile(String fileContent, String id) {
         String[] items = fileContent.split("\\*");
         
+        verifiedString(items[0]);
+        
         getAccount(id).addFile(items[0]);
         fileDao.addFile(items[0], items[1]);
          try {
@@ -110,10 +112,38 @@ public class DaoImpl implements Dao{
          
          
         try {
-            help.write(items[0],items[1]);
+            help.writeFile(items[0],items[1]);
         } catch (IOException ex) {
             Logger.getLogger(DaoImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+    
+    public String verifiedString(String name){
+        String suggestedName=name;
+        boolean verified=false;
+        while(!verified){
+        if (check(name)){
+            String[] items=name.split(".");
+            String[] first=items[0].split("_copy_");
+            if(first.length < 1){
+            int val=Integer.parseInt(first[1]);
+            suggestedName=first[0]+"_copy_"+(val+1)+".txt";
+            }else{
+                suggestedName = first[0]+"_copy_1";
+            }
+        }
+        verified=!check(suggestedName);
+    }
+        return suggestedName;
+    }
+    
+    public boolean check(String name){
+        for(String currentName: fileDao.getFileNameList()){
+            if (name.equals(currentName)){
+                return true;
+            }
+    }
+        return false;
     }
 
     

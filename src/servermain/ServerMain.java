@@ -40,10 +40,16 @@ public class ServerMain {
         dao.createAccountList();
         dao.getFileDao().createFileList();
         
+//        String name="smit";
+//        String[] input=name.split("_");
+//        System.out.println(input[0]);
+//        System.out.println(input[1]);
         
         System.out.println(dao.getDataListString());
-        
-        
+//        
+//        Helper help=new Helper();
+//        help.writeFile("fileName.txt","asdasfasf");
+//        
         
         int tcount=0;
         

@@ -6,6 +6,7 @@
 package dao;
 
 
+import java.util.List;
 import servermain.DFile;
 
 /**
@@ -17,4 +18,5 @@ public interface FileDao {
     public DFile getFile(String fileName);
     public void addFile(String fileName, String fileContent);
     public void createFileList();
+    public List<String> getFileNameList();
 }

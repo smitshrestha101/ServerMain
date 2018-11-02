@@ -38,6 +38,14 @@ public class FileDaoImpl implements FileDao {
         FileList.add(file);
         
     }
+    @Override
+    public List<String> getFileNameList(){
+        List<String> fileNameList=new ArrayList<>();
+        for(DFile file :FileList){
+            fileNameList.add(file.getFileName());
+        }
+        return fileNameList;
+    }
 
     @Override
     public void createFileList() {

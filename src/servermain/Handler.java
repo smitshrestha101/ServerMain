@@ -56,7 +56,9 @@ public class Handler extends Thread {
                         break;
                     case "3":
                         disconnect();
-
+                        break;
+                    default:
+                        break;
                 }
 
             } catch (IOException ex) {
@@ -165,6 +167,11 @@ public class Handler extends Thread {
                 break;
             case "2":
                 upload(inputId);
+                break;
+            case "3":
+                fileList(inputId);
+            case "4":
+                disconnect();
                 
         }
              
@@ -198,5 +205,10 @@ public class Handler extends Thread {
         fileContent=dis.readUTF();
         
         dao.uploadFile(fileContent,id);
+    }
+    
+    public void fileList(String id) throws IOException{
+        String fileList=dao.getAccount(id).getfiles();
+        dos.writeUTF(fileList);
     }
 }

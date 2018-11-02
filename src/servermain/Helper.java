@@ -8,9 +8,11 @@ package servermain;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,9 +28,11 @@ public class Helper {
 
         writer.close();
     }
-    //TO ADD WRITE FILE IN SPECIFIC FILE
+    //TO ADD WRITE FILE IN SPECIFIC FOLDER
     public void writeFile(String fileName, String toWrite) throws IOException {
-        BufferedWriter writer = new BufferedWriter(new FileWriter(fileName));
+        File directory = new File("D:\\OneDrive - Troy University\\CS\\netbeansprojects\\ServerMain\\files");
+        File fullPath = new File(directory, fileName);
+        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(fullPath)));
         writer.write(toWrite);
 
         writer.close();
