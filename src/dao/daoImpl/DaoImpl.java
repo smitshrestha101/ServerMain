@@ -7,7 +7,9 @@ package dao.daoImpl;
 
 import dao.Dao;
 import dao.FileDao;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -35,8 +37,10 @@ public class DaoImpl implements Dao{
         String dataListString = "";
         for(Account account : accountList){
             dataListString += account.getString();
-            dataListString+="\n";
+    
         }
+       
+        
         return dataListString;
     }
 
@@ -50,6 +54,7 @@ public class DaoImpl implements Dao{
             
             
             for (String parse : dataList) {
+//                System.out.println(parse);
                 String[] parts = parse.split(" ");
                 Account account = new Account (parse);
                 accountList.add(account);
@@ -73,12 +78,13 @@ public class DaoImpl implements Dao{
 
     @Override
     public void addUser(String id, String pw) {
+        //System.out.println("addUser");
         String data=id+" "+pw;
         Account account=new Account(data);
         accountList.add(account);
         map.put(id, accountList.indexOf(account));
         try {
-            help.write("account.txt", getDataListString());
+           updateAccountFile();
         } catch (IOException ex) {
             Logger.getLogger(DaoImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -98,21 +104,23 @@ public class DaoImpl implements Dao{
 
     @Override
     public void uploadFile(String fileContent, String id) {
+        System.out.println("File content" + fileContent);
         String[] items = fileContent.split("\\*");
+        System.out.println("SPlit name" + items[0]);
+        String verified = verifiedString(items[0]);
+        System.out.println("Verified Name"+ verified);
+        getAccount(id).addFile(verified);
+        fileDao.addFile(verified, items[1]);
         
-        verifiedString(items[0]);
-        
-        getAccount(id).addFile(items[0]);
-        fileDao.addFile(items[0], items[1]);
          try {
-            help.write("account.txt", getDataListString());
+            updateAccountFile();
         } catch (IOException ex) {
             Logger.getLogger(DaoImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
          
          
         try {
-            help.writeFile(items[0],items[1]);
+            help.writeFile(verified,items[1]);
         } catch (IOException ex) {
             Logger.getLogger(DaoImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -120,30 +128,51 @@ public class DaoImpl implements Dao{
     
     public String verifiedString(String name){
         String suggestedName=name;
+        System.out.println("suggestedname"+suggestedName);
         boolean verified=false;
         while(!verified){
-        if (check(name)){
-            String[] items=name.split(".");
-            String[] first=items[0].split("_copy_");
-            if(first.length < 1){
-            int val=Integer.parseInt(first[1]);
-            suggestedName=first[0]+"_copy_"+(val+1)+".txt";
+            System.out.println("inside loop");
+        if (check(suggestedName)){
+            System.out.println("checking");
+            System.out.println("Size " + suggestedName);
+            String[] items= suggestedName.split("\\.");
+            if(items[0].contains("_copy_")){
+                String[] first=items[0].split("_copy_");
+
+                
+                int val=Integer.parseInt(first[1]);
+                suggestedName=first[0]+"_copy_"+(val+1)+".txt";
+                
             }else{
-                suggestedName = first[0]+"_copy_1";
+                suggestedName = items[0]+"_copy_1.txt";
             }
         }
         verified=!check(suggestedName);
-    }
+        
+       
+    }   System.out.println("suggestedname2"+suggestedName);
         return suggestedName;
     }
     
     public boolean check(String name){
+        System.out.println("called");
+        
         for(String currentName: fileDao.getFileNameList()){
-            if (name.equals(currentName)){
+            System.out.println("cur"+currentName);
+            if (name.equalsIgnoreCase(currentName)){
                 return true;
             }
     }
         return false;
+    }
+
+    @Override
+    public void updateAccountFile() throws IOException {
+        PrintWriter writer = new PrintWriter(new FileWriter("account.txt"));
+        for(Account account : accountList){
+            writer.println(account.getString());
+        }
+        writer.close();
     }
 
     

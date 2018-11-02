@@ -13,6 +13,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,16 +22,16 @@ import java.util.List;
  * @author smits
  */
 public class Helper {
-
+ 
     public void write(String fileName, String toWrite) throws IOException {
-        BufferedWriter writer = new BufferedWriter(new FileWriter(fileName));
-        writer.write(toWrite);
+        PrintWriter writer = new PrintWriter(new FileWriter(fileName));
+        writer.print(toWrite);
 
         writer.close();
     }
     //TO ADD WRITE FILE IN SPECIFIC FOLDER
     public void writeFile(String fileName, String toWrite) throws IOException {
-        File directory = new File("D:\\OneDrive - Troy University\\CS\\netbeansprojects\\ServerMain\\files");
+        File directory = new File(System.getProperty("user.dir")+"\\files");
         File fullPath = new File(directory, fileName);
         BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(fullPath)));
         writer.write(toWrite);

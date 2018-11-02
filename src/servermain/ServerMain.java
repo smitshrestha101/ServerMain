@@ -39,6 +39,10 @@ public class ServerMain {
         Dao dao = new DaoImpl();
         dao.createAccountList();
         dao.getFileDao().createFileList();
+
+        
+        //System.out.println(dao.getFileDao().getFileNameList());
+       // System.out.println(System.getProperty("user.dir"));
         
 //        String name="smit";
 //        String[] input=name.split("_");
@@ -47,9 +51,8 @@ public class ServerMain {
         
         System.out.println(dao.getDataListString());
 //        
-//        Helper help=new Helper();
-//        help.writeFile("fileName.txt","asdasfasf");
-//        
+        
+       
         
         int tcount=0;
         

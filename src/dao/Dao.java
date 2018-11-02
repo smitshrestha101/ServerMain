@@ -5,6 +5,7 @@
  */
 package dao;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import servermain.Account;
@@ -25,4 +26,5 @@ public interface Dao {
     public Account getAccount(String inputId);
     public FileDao getFileDao();
     public void uploadFile(String fileContent, String id);
+    public void updateAccountFile() throws IOException;
 }

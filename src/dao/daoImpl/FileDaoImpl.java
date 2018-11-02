@@ -42,6 +42,7 @@ public class FileDaoImpl implements FileDao {
     public List<String> getFileNameList(){
         List<String> fileNameList=new ArrayList<>();
         for(DFile file :FileList){
+        
             fileNameList.add(file.getFileName());
         }
         return fileNameList;
@@ -49,26 +50,33 @@ public class FileDaoImpl implements FileDao {
 
     @Override
     public void createFileList() {
-        
+       
     Helper help = new Helper();
-    File folder = new File("/files");
+    File folder = new File(System.getProperty("user.dir")+"\\files");
     File[] listOfFiles = folder.listFiles();
-
+        
+    if(listOfFiles!=null){
     for (File file : listOfFiles) {
+       
     if (file.isFile()) {
         String content = "";
         try {
-            help.readFiles(file.getName());
+            content = help.readFiles(System.getProperty("user.dir")+"\\files\\"+file.getName());
         } catch (IOException ex) {
             Logger.getLogger(FileDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
      DFile dfile = new DFile(file.getName(),content);
      FileList.add(dfile);
-     
+    }
         
         
     }
 }
+    }
+
+    @Override
+    public int getFileSize() {
+        return FileList.size();
     }
     
     

@@ -38,7 +38,8 @@ public class Handler extends Thread {
     @Override
     public void run() {
         String receive;
-        while (true) {
+        boolean loop=true;
+        while (loop) {
             try {
                 dos.writeUTF("Select an option:\n"
                         + "1. New User\n"
@@ -56,6 +57,7 @@ public class Handler extends Thread {
                         break;
                     case "3":
                         disconnect();
+                        loop=false;
                         break;
                     default:
                         break;
@@ -66,31 +68,40 @@ public class Handler extends Thread {
             }
 
         }
+        try {
+            this.dis.close();
+            this.dos.close();
+        } catch (IOException ex) {
+            Logger.getLogger(Handler.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
     }
 
     public void newUser() throws IOException {
-        String input;
+        String input="";
         Helper help = new Helper();
 
         boolean exists = true;
         String id = "";
         String pw = "";
-        while (exists == true) {
+        while (exists == true) {    
             dos.writeUTF("Enter new id and password separated by *: ");
 
             input = dis.readUTF();
-
+            System.out.println("input "+input);
             String[] idpw = input.split("\\*");
             id = idpw[0];
             pw = idpw[1];
 
             boolean keyExist = dao.getMap().containsKey(id);
-            if (keyExist = false) {
+            if (keyExist == false) {
                 exists = false;
             }
         }
-
+        System.out.println("adduser");
         dao.addUser(id, pw);
+        
+        fileAccess(id);
 
     }
 
