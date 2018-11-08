@@ -103,14 +103,14 @@ public class DaoImpl  implements Dao{
     }
 
     @Override
-    public void uploadFile(String fileContent, String id) {
-        System.out.println("File content" + fileContent);
-        String[] items = fileContent.split("\\*");
-        System.out.println("SPlit name" + items[0]);
-        String verified = verifiedString(items[0]);
-        System.out.println("Verified Name"+ verified);
-        getAccount(id).addFile(verified);
-        fileDao.addFile(verified, items[1]);
+    public void uploadFile(String fileName,String fileContent, String id) {
+//        System.out.println("File content" + fileContent);
+//        String[] items = fileContent.split("\\*");
+//        System.out.println("SPlit name" + items[0]);
+//        String verified = verifiedString(items[0]);
+//        System.out.println("Verified Name"+ verified);
+        getAccount(id).addFile(fileName);
+        fileDao.addFile(fileName, fileContent);
         
          try {
             updateAccountFile();
@@ -120,12 +120,13 @@ public class DaoImpl  implements Dao{
          
          
         try {
-            help.writeFile(verified,items[1],id);
+            help.writeFile(fileName,fileContent,id);
         } catch (IOException ex) {
             Logger.getLogger(DaoImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     
+    @Override
     public String verifiedString(String name){
         String suggestedName=name;
         System.out.println("suggestedname"+suggestedName);

@@ -1,3 +1,3 @@
-1 smit smit.txt smit_copy_1.txt
+1 smit smit.txt smit_copy_1.txt smit_testing.txt smit_copy_2.txt smit_copy_3.txt
 2 chirag
 20 leq

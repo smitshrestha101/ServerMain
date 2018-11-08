@@ -25,7 +25,8 @@ public interface Dao {
     public void addUser(String id, String pw);
     public Account getAccount(String inputId);
     public FileDao getFileDao();
-    public void uploadFile(String fileContent, String id);
+    public void uploadFile(String fileName,String fileContent, String id);
     public void updateAccountFile() throws IOException;
     public List<String> getUsers();
+    public String verifiedString(String name);
 }
