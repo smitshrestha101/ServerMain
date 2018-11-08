@@ -51,15 +51,19 @@ public class Handler extends Thread {
                 receive = dis.readUTF();
 
                 switch (receive) {
-                    case "1":
-                        newUser();
-                        //this.socket.close();
+                    case "1":                       //NEW USER
+                        loop=!newUser();                      
+                        if(!loop){
+                            disconnect();
+                        }
                         break;
-                    case "2":
-                        existingUser();
-                        //this.socket.close();
+                    case "2":                       //EXISTING USER
+                        loop = !existingUser();
+                        if(!loop){
+                            disconnect();
+                        }
                         break;
-                    case "3":
+                    case "3":                       //DISCONNECT
                         disconnect();
                         loop = false;
                         break;
@@ -81,19 +85,19 @@ public class Handler extends Thread {
 
     }
 
-    public void newUser() throws IOException {
+    public boolean newUser() throws IOException {
         String input = "";
         Helper help = new Helper();
 
         boolean exists = true;
         String id = "";
         String pw = "";
+        dos.writeUTF("READY");
         while (exists == true) {
-            dos.writeUTF("READY");
+            
             dos.writeUTF("READY*Enter new id and password separated by *: ");
 
             input = dis.readUTF();
-            // System.out.println("input "+input);
             String[] idpw = input.split("\\*");
             id = idpw[0];
             pw = idpw[1];
@@ -106,20 +110,19 @@ public class Handler extends Thread {
                 dos.writeUTF("CREATEFAILED");
             }
         }
-        // System.out.println("adduser");
         dao.addUser(id, pw);
 
-        fileAccess(id);
+        return fileAccess(id);
 
     }
 
-    public void existingUser() throws IOException {
+    public boolean existingUser() throws IOException {
         String inputId, inputPw, inputIdPw;
-
+        boolean exit = false;
         int trials = 0;
         dos.writeUTF("READY");
 
-        while (trials < 3) {
+        while (trials < 3 && !exit) {
 
             dos.writeUTF("Enter id and password separated by *: ");
             inputIdPw = dis.readUTF();
@@ -128,9 +131,6 @@ public class Handler extends Thread {
             inputId = input[0];
             inputPw = input[1];
 
-            //dos.writeUTF("Enter Password: ");
-            // inputPw = dis.readUTF();
-            //System.out.println(inputPw+inputId);
             boolean keyExist = dao.getMap().containsKey(inputId);
 
             Account acc = null;
@@ -139,9 +139,9 @@ public class Handler extends Thread {
                 acc = dao.getAccount(inputId);
 
                 if (inputPw.equals(acc.getPassword())) {
-                    //System.out.println("insert");
+
                     dos.writeUTF("LOGINSUCCESS");
-                    fileAccess(inputId);
+                    exit = fileAccess(inputId);
 
                 } else {
                     dos.writeUTF("LOGINERROR");
@@ -155,20 +155,22 @@ public class Handler extends Thread {
 
         }
         
-//        dos.writeUTF("You failed the 3 trials, the connection will be terminated!");
-//        disconnect();
+
         menu = "LOGINERROR*"
                 + "1. New User "
                 + "2. Existing User "
                 + "3. Disconnect";
+        return exit;
 
     }
 
     public void disconnect() throws IOException {
+       
         this.socket.close();
+        dao.decreaseTcount();
     }
 
-    public void fileAccess(String inputId) throws IOException {
+    public boolean fileAccess(String inputId) throws IOException {
         String input;
         Account acc = null;
 
@@ -179,11 +181,9 @@ public class Handler extends Thread {
                 + "3. File List "
                 + "4. Disconnect";
         boolean filedownload = true;
-        //dos.writeUTF("Login successfull!");
 
         while (filedownload) {
 
-            //String fileList=acc.getfiles();
             dos.writeUTF(fileList + menu);
 
             input = dis.readUTF();
@@ -195,7 +195,7 @@ public class Handler extends Thread {
                     } else {
                         fileList = "";
                     }
-                    ;
+                    
                     break;
                 case "2":
                     upload(inputId);
@@ -208,26 +208,31 @@ public class Handler extends Thread {
                     break;
                 case "4":
                     filedownload=false;
-                    disconnect();
-                    break;
+                    return true;
 
             }
         }
-
+        return false;
     }
 
     public boolean download(String inputId) throws IOException {
         String fileName;
-        DFile file;
+        
         dos.writeUTF("Enter the name of the file to download: ");
 
         fileName = dis.readUTF();
-
-        file = dao.getFileDao().getFile(fileName);
+        DFile file = dao.getFileDao().getFile(fileName);
+        String[] fileList=dao.getAccount(inputId).getfiles().split(" ");
+        for (String currFile : fileList){
+            if(!currFile.equals(fileName)){
+                file=null;
+            }
+            
+        }
 
         if (file == null) {
-
-            //dos.writeUTF("FILEDOWNLOADFAILED");
+                
+            dos.writeUTF("FILEDOWNLOADFAILED");
             return false;
         } else {
             dos.writeUTF("FOUND");
@@ -248,7 +253,6 @@ public class Handler extends Thread {
 
         String fileName = "";
 
-        // while (!fileName.equals("ERROR")) {
         dos.writeUTF("Enter file name: ");
 
         fileName = dis.readUTF();
@@ -260,7 +264,6 @@ public class Handler extends Thread {
             dos.writeUTF("CONTINUE");
             dos.writeUTF("Enter contents of the file: ");
             String fileContent;
-            //dos.writeUTF("Enter filename and contents separated by *: ");
 
             fileContent = dis.readUTF();
 

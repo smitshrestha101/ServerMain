@@ -20,74 +20,44 @@ public class ServerMain {
     public static void main(String[] args) throws IOException {
         
         ServerSocket serverSocket=new ServerSocket(9002);
-//        Map<String, Integer> map = new HashMap<String, Integer>();
-   
-//        Helper help = new Helper();
-//
-//        List<String> dataList = help.read("account.txt");
-        //help.update("account.txt","20");
-        
-//        List<Account> accountList = new ArrayList<>();
-//        for (String parse : dataList) {
-//            String[] parts = parse.split(" ");
-//            Account account = new Account (parse);
-//            accountList.add(account);
-//            map.put(parts[0],accountList.indexOf(account));
-//            
-//        }
 
         Dao dao = new DaoImpl();
         dao.createAccountList();
         dao.getFileDao().createFileList(dao.getUsers());
-
-        
-        //System.out.println(dao.getFileDao().getFileNameList());
-       // System.out.println(System.getProperty("user.dir"));
-        
-//        String name="smit";
-//        String[] input=name.split("_");
-//        System.out.println(input[0]);
-//        System.out.println(input[1]);
         
         System.out.println(dao.getDataListString());
-//        
-        
-       
-        
-        int tcount=0;
-        
-        while (tcount<5){
+
+        while (dao.getTcount()<=5){
             Socket socket=null;
             
             try{
-                socket=serverSocket.accept();
                 
+                socket=serverSocket.accept();
+                               
                 DataInputStream dis=new DataInputStream(socket.getInputStream());
                 DataOutputStream dos=new DataOutputStream(socket.getOutputStream());
                 
-                if (tcount>4){
-                    dos.writeUTF("Maximum connections being made and cannot take any additional connections at the time. Please try again later!!!");
+                if (dao.getTcount()>4){                     //LIMITING NUMBER OF THREADS
+                    dos.writeUTF("BUSY");
+                    System.out.println("BUSY");
                 }
-                
+                else{
+                    
+                    dos.writeUTF("READY");
+                                
                 Thread t=new Handler(socket,dis,dos, dao);
-                tcount++;
+                                
+                dao.increaseTcount();
                 
                 t.start();
-                   
+                }
             }
             
             catch(Exception e){
                 socket.close();
                 e.printStackTrace();
             }
-        
-         
 
-     
-        
-        
-       // System.out.println(map.get("3"));
-        //System.out.println(accountList.get(0));
        
     }
 }}

@@ -14,6 +14,8 @@ import servermain.Account;
  *
  * @author smits
  */
+
+//DATA ACCESS OBJECT INTERFACE
 public interface Dao {
     
     
@@ -29,4 +31,7 @@ public interface Dao {
     public void updateAccountFile() throws IOException;
     public List<String> getUsers();
     public String verifiedString(String name);
+    public void increaseTcount();
+    public void decreaseTcount();
+    public int getTcount();
 }

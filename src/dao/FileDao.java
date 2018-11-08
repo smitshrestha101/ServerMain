@@ -13,6 +13,8 @@ import servermain.DFile;
  *
  * @author smits
  */
+
+//INTERFACE TO MANAGE FILES
 public interface FileDao {
     
     public DFile getFile(String fileName);

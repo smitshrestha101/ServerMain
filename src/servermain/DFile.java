@@ -9,6 +9,8 @@ package servermain;
  *
  * @author smits
  */
+
+//MANAGING FILES
 public class DFile {
     
     String fileName,contents;

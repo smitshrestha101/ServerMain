@@ -26,17 +26,33 @@ import servermain.Helper;
 public class DaoImpl  implements Dao{
     
     List<Account> accountList = new ArrayList<>();
-    Map<String, Integer> map = new HashMap<String, Integer>();
+    Map<String, Integer> map = new HashMap<String, Integer>();  //FOR FAST DATA ACCESS
     Helper help;
     FileDao fileDao=new FileDaoImpl();
     
+    //TO LIMIT NUMBER OF CONNECTIONS
+    public int tcount=0;
+    
+    @Override
+    public int getTcount() {
+        return tcount;
+    }
+    @Override
+    public void decreaseTcount() {
+       tcount = tcount - 1;
+    }
+    @Override
+    public void increaseTcount() {
+        tcount = tcount + 1;
+    }
     
     
+    //TO CONVERT ARRAY TO STRING FORMAT TO WRITE IN FILE
     @Override
     public String getDataListString() {
         String dataListString = "";
         for(Account account : accountList){
-            dataListString += account.getString();
+            dataListString += account.getString()+"\n";
     
         }
        
@@ -44,17 +60,16 @@ public class DaoImpl  implements Dao{
         return dataListString;
     }
 
+    //FOR LOADING ALL DATA FROM FILE AND STORING IN LIST FOR EASY ACCESS
     @Override
     public void createAccountList() {
         try {
              help = new Helper();
             
             List<String> dataList = help.read("account.txt");
-            //help.update("account.txt","20");
             
             
             for (String parse : dataList) {
-//                System.out.println(parse);
                 String[] parts = parse.split(" ");
                 Account account = new Account (parse);
                 accountList.add(account);
@@ -76,9 +91,9 @@ public class DaoImpl  implements Dao{
         return map;
     }
 
+    //UPDATES THE ACCOUNTLIST AND FILE FOR ADDITION OF USER
     @Override
     public void addUser(String id, String pw) {
-        //System.out.println("addUser");
         String data=id+" "+pw;
         Account account=new Account(data);
         accountList.add(account);
@@ -102,13 +117,9 @@ public class DaoImpl  implements Dao{
         return fileDao;
     }
 
+    //TO UPDATE ACCOUNT LIST, CREATE FILE 
     @Override
     public void uploadFile(String fileName,String fileContent, String id) {
-//        System.out.println("File content" + fileContent);
-//        String[] items = fileContent.split("\\*");
-//        System.out.println("SPlit name" + items[0]);
-//        String verified = verifiedString(items[0]);
-//        System.out.println("Verified Name"+ verified);
         getAccount(id).addFile(fileName);
         fileDao.addFile(fileName, fileContent);
         
@@ -126,16 +137,13 @@ public class DaoImpl  implements Dao{
         }
     }
     
+    //CHECKS FOR DUPLICATE FILENAME
     @Override
     public String verifiedString(String name){
         String suggestedName=name;
-        System.out.println("suggestedname"+suggestedName);
         boolean verified=false;
         while(!verified){
-            System.out.println("inside loop");
         if (check(suggestedName)){
-            System.out.println("checking");
-            System.out.println("Size " + suggestedName);
             String[] items= suggestedName.split("\\.");
             if(items[0].contains("_copy_")){
                 String[] first=items[0].split("_copy_");
@@ -151,15 +159,13 @@ public class DaoImpl  implements Dao{
         verified=!check(suggestedName);
         
        
-    }   System.out.println("suggestedname2"+suggestedName);
+    } 
         return suggestedName;
     }
     
     public boolean check(String name){
-        System.out.println("called");
         
         for(String currentName: fileDao.getFileNameList()){
-            System.out.println("cur"+currentName);
             if (name.equalsIgnoreCase(currentName)){
                 return true;
             }

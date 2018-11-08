@@ -50,6 +50,7 @@ public class FileDaoImpl implements FileDao {
         return fileNameList;
     }
 
+    //TO LOAD DATA FROM FILES TO SERVER IN FORM OF LIST
     @Override
     public void createFileList(List<String> usernameList) {
         Helper help = new Helper();

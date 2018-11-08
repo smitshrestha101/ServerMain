@@ -1,3 +1,11 @@
-1 smit smit.txt smit_copy_1.txt smit_testing.txt smit_copy_2.txt smit_copy_3.txt
+1 smit smit.txt smit_copy_1.txt smit_testing.txt smit_copy_2.txt smit_copy_3.txt filena.txt smit_copy_4.txt
 2 chirag
 20 leq
+main mainprogram
+maini maijnn
+21 asdasdasd
+23 mero
+65 spotify spotify.txt
+11 nepal
+100 red
+101 blue

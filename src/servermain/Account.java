@@ -14,6 +14,8 @@ import java.util.*;
  *
  * @author smits
  */
+
+//TO HOLD USER ACCOUNTS
 public class Account {
     
     String userId, password,files;
@@ -21,12 +23,9 @@ public class Account {
 
     public Account( String data) {
         String [] d = data.split(" ");
-        //System.out.println(d.length);
-//        System.out.println("data"+data);
         this.userId = d[0];
         this.password = d[1];
         files = "";
-        //indexchecking
         
         for(int i = 2; i < d.length ; i++){
             files = files + " " +  d[i];
