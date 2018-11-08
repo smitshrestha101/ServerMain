@@ -38,7 +38,7 @@ public class ServerMain {
 
         Dao dao = new DaoImpl();
         dao.createAccountList();
-        dao.getFileDao().createFileList();
+        dao.getFileDao().createFileList(dao.getUsers());
 
         
         //System.out.println(dao.getFileDao().getFileNameList());
@@ -64,6 +64,10 @@ public class ServerMain {
                 
                 DataInputStream dis=new DataInputStream(socket.getInputStream());
                 DataOutputStream dos=new DataOutputStream(socket.getOutputStream());
+                
+                if (tcount>4){
+                    dos.writeUTF("Maximum connections being made and cannot take any additional connections at the time. Please try again later!!!");
+                }
                 
                 Thread t=new Handler(socket,dis,dos, dao);
                 tcount++;

@@ -30,8 +30,8 @@ public class Helper {
         writer.close();
     }
     //TO ADD WRITE FILE IN SPECIFIC FOLDER
-    public void writeFile(String fileName, String toWrite) throws IOException {
-        File directory = new File(System.getProperty("user.dir")+"\\files");
+    public void writeFile(String fileName, String toWrite, String username) throws IOException {
+        File directory = new File(System.getProperty("user.dir")+"\\files\\"+username);
         File fullPath = new File(directory, fileName);
         BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(fullPath)));
         writer.write(toWrite);

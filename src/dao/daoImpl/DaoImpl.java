@@ -23,7 +23,7 @@ import servermain.Helper;
  *
  * @author smits
  */
-public class DaoImpl implements Dao{
+public class DaoImpl  implements Dao{
     
     List<Account> accountList = new ArrayList<>();
     Map<String, Integer> map = new HashMap<String, Integer>();
@@ -120,7 +120,7 @@ public class DaoImpl implements Dao{
          
          
         try {
-            help.writeFile(verified,items[1]);
+            help.writeFile(verified,items[1],id);
         } catch (IOException ex) {
             Logger.getLogger(DaoImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -173,6 +173,15 @@ public class DaoImpl implements Dao{
             writer.println(account.getString());
         }
         writer.close();
+    }
+
+    @Override
+    public List<String> getUsers() {
+        List<String> usernameList = new ArrayList<>();
+        for(Account acc: accountList){
+            usernameList.add(acc.getUserId());
+        }
+        return usernameList;
     }
 
     

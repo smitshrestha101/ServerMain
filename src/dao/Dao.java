@@ -27,4 +27,5 @@ public interface Dao {
     public FileDao getFileDao();
     public void uploadFile(String fileContent, String id);
     public void updateAccountFile() throws IOException;
+    public List<String> getUsers();
 }

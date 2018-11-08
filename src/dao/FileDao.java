@@ -17,7 +17,7 @@ public interface FileDao {
     
     public DFile getFile(String fileName);
     public void addFile(String fileName, String fileContent);
-    public void createFileList();
+    public void createFileList(List<String> usernameList);
     public List<String> getFileNameList();
     public int getFileSize();
 }
